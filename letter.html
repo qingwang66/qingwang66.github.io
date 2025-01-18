@@ -16,9 +16,48 @@
             border: 5px solid #ccc;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
+        /* 隐藏audio元素，因为它默认会显示播放控件 */
+        audio {
+            display: none;
+        }
     </style>
 </head>
 <body>
-    <img src="img1/letter.png" alt="描述图片内容的文字">
-</body>
+    <img src="img1/letter.png" >
+ 
+		<!-- 本地音乐，双击index.html -->
+		<div style="position:absolute;left:0px;bottom:0px;">
+			<!-- 隐藏播放条：删除 controls="controls" 属性 -->
+			<audio autoplay="autoplay" loop="loop" id="audios">
+				<source src="music/lj.m4a" type="audio/mp4" /> <!-- 注意：m4a文件的MIME类型应该是audio/mp4 -->
+			</audio>
+		</div> 
+        <script>
+			var music = document.getElementById('audios');
+			var state = 0;
+			// 在某些浏览器和环境中，可能需要用户交互来触发播放
+			document.addEventListener('touchstart', function(){    
+				if(state === 0){        
+					music.play();        
+					state = 1;    
+				}  
+			}, false);
+			// 针对微信浏览器
+			document.addEventListener("WeixinJSBridgeReady", function () {    
+				music.play();
+			}, false);  
+			// 循环播放
+			music.onended = function () {    
+				music.currentTime = 0; // 直接重置当前时间到0来实现循环，而不是重新加载
+				music.play();
+			};    
+			// 虽然播放条被隐藏，但添加点击事件以防万一需要手动触发播放
+			document.body.addEventListener('click', function() {
+				if (state === 0) {
+					music.play();
+					state = 1;
+				}
+			});
+		</script>
+	</body>
 </html>
