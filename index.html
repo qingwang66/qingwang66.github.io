@@ -56,31 +56,33 @@
 			</div>
 		<!-- 本地音乐，双击index.html -->
 		<div style="position:absolute;left:0px;bottom:0px;">
-			<!-- 隐藏播放条：删除ontrols="controls"部分 -->
-			<audio autoplay="autoplay" loop="loop" controls="controls" id="audios">
-				<source src="music/lj.m4a" type="audio/mp3" />
+			<!-- 隐藏播放条：删除 controls="controls" 属性 -->
+			<audio autoplay="autoplay" loop="loop" id="audios">
+				<source src="music/lj.m4a" type="audio/mp4" /> <!-- 注意：m4a文件的MIME类型应该是audio/mp4 -->
 			</audio>
 		</div>
 		<script>
 			var music = document.getElementById('audios');
 			var state = 0;
+			// 在某些浏览器和环境中，可能需要用户交互来触发播放
 			document.addEventListener('touchstart', function(){    
-				  if(state==0){        
-					  music.play();        
-					  state=1;    
-				  }  
-			  }, false);
+				if(state === 0){        
+					music.play();        
+					state = 1;    
+				}  
+			}, false);
+			// 针对微信浏览器
 			document.addEventListener("WeixinJSBridgeReady", function () {    
-				  music.play();
-			  }, false);  
+				music.play();
+			}, false);  
 			// 循环播放
 			music.onended = function () {    
-				music.load();    
+				music.currentTime = 0; // 直接重置当前时间到0来实现循环，而不是重新加载
 				music.play();
-			}    
-			// 添加点击事件以自动播放音乐
+			};    
+			// 虽然播放条被隐藏，但添加点击事件以防万一需要手动触发播放
 			document.body.addEventListener('click', function() {
-				if (state == 0) {
+				if (state === 0) {
 					music.play();
 					state = 1;
 				}
